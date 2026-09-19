@@ -1,0 +1,1 @@
+import{n as e,t}from"./WebGPURenderer-CalaF5-t.js";e();export{t as WebGPURenderer};

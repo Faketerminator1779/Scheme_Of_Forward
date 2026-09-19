@@ -1,0 +1,58 @@
+{ "frames": {
+   "tile": {
+    "frame": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "sourceSize": { "w": 17, "h": 34 },
+    "duration": 100
+   },
+   "tileArrowUp": {
+    "frame": { "x": 17, "y": 0, "w": 17, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "sourceSize": { "w": 17, "h": 34 },
+    "duration": 100
+   },
+   "tileArrowDown": {
+    "frame": { "x": 34, "y": 0, "w": 17, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "sourceSize": { "w": 17, "h": 34 },
+    "duration": 100
+   },
+   "tileArrowLeft": {
+    "frame": { "x": 51, "y": 0, "w": 17, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "sourceSize": { "w": 17, "h": 34 },
+    "duration": 100
+   },
+   "tileArrowRight": {
+    "frame": { "x": 68, "y": 0, "w": 17, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "sourceSize": { "w": 17, "h": 34 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3.18.5-x64",
+  "image": "tiles.png",
+  "format": "RGBA8888",
+  "size": { "w": 85, "h": 34 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
