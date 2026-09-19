@@ -1,0 +1,38 @@
+{
+    "tileSize": 32,
+
+    "schemas": [
+        {
+            "name": "room_z",
+            "width": 3,
+            "height": 5,
+            "tiles": [
+                [0,0,10],
+                [0,0,10],
+                [10,10,10],
+                [10,0,0],
+                [10,0,0]
+            ],
+            "startTileX": 0,
+            "startTileY": 4,
+            "exitTileX":2,
+            "exitTileY":0
+        },
+        {
+            "name": "room_snake",
+            "width": 3,
+            "height": 5,
+            "tiles": [
+                [10,0,0],
+                [10,10,10],
+                [0,0,10],
+                [10,10,10],
+                [10,0,0]
+            ],
+            "startTileX": 0,
+            "startTileY": 4,
+            "exitTileX":0,
+            "exitTileY":0
+        }
+    ] 
+}

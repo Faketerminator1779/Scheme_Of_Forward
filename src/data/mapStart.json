@@ -1,0 +1,36 @@
+{
+    "tileSize": 32,
+
+    "schemas": [
+        {
+            "name": "Start1",
+            "width": 3,
+            "height": 4,
+            "tiles": [
+                [10,10,10],
+                [10,11,10],
+                [13,12,14],
+                [10,10,10]
+            ],
+            "startTileX": 1,
+            "startTileY": 2,
+            "exitTileX":1,
+            "exitTileY":0
+        },
+        {
+            "name": "Start2",
+            "width": 5,
+            "height": 4,
+            "tiles": [
+                [0,0,10,0,0],
+                [10,10,11,10,10],
+                [10,13,12,14,10],
+                [10,10,10,10,10]
+            ],
+            "startTileX": 2,
+            "startTileY": 2,
+            "exitTileX":2,
+            "exitTileY":0
+        }
+    ] 
+}

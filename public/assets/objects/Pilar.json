@@ -1,0 +1,26 @@
+{ "frames": {
+   "pilar": {
+    "frame": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 34 },
+    "sourceSize": { "w": 17, "h": 34 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "https://www.aseprite.org/",
+  "version": "1.3.18.5-x64",
+  "image": "Pilar.png",
+  "format": "RGBA8888",
+  "size": { "w": 17, "h": 34 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
