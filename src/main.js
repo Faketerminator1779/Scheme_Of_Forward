@@ -7,7 +7,8 @@ TextureStyle.defaultOptions.scaleMode = 'nearest'
 
 await Assets.load([
     './assets/map/tiles.json',
-    './assets/characters/knight.json'
+    './assets/characters/knight.json',
+    './assets/objects/pilar.json'
 ]);
 
 

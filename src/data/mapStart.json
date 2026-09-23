@@ -12,10 +12,18 @@
                 [13,12,14],
                 [10,10,10]
             ],
+            "objects": [
+                {
+                    "name": "pilar",
+                    "x": 2,
+                    "y": 0
+                }
+            ],
             "startTileX": 1,
             "startTileY": 2,
             "exitTileX":1,
             "exitTileY":0
+
         },
         {
             "name": "Start2",
@@ -26,6 +34,18 @@
                 [10,10,11,10,10],
                 [10,13,12,14,10],
                 [10,10,10,10,10]
+            ],
+            "objects": [
+                {
+                    "name": "pilar",
+                    "x": 4,
+                    "y": 1
+                },
+                {
+                    "name": "pilar",
+                    "x": 3,
+                    "y": 3
+                }
             ],
             "startTileX": 2,
             "startTileY": 2,

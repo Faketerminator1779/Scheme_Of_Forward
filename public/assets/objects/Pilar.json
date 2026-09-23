@@ -11,7 +11,7 @@
  "meta": {
   "app": "https://www.aseprite.org/",
   "version": "1.3.18.5-x64",
-  "image": "Pilar.png",
+  "image": "pilar.png",
   "format": "RGBA8888",
   "size": { "w": 17, "h": 34 },
   "scale": "1",

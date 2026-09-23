@@ -6,6 +6,9 @@ import mapRooms from '../data/mapRooms.json'
 
 import { Knight } from '../objects/Knight.js'
 
+import { Pilar } from '../objects/Pilar.js'
+
+
 export class GameScene extends Scene {
     constructor(sceneManager) {
         super(sceneManager);
@@ -17,6 +20,7 @@ export class GameScene extends Scene {
         this.container.addChild(this.defeatOverlay)
 
         this.objectContainer = new Container()
+        this.objectContainer.sortableChildren = true
         this.camera.addChild(this.objectContainer)
 
         this.playerContainer = new Container()
@@ -50,9 +54,12 @@ export class GameScene extends Scene {
         this.map = []
         this.mapLayout = []
         this.mapLayoutOffset = []
+        this.mapLayoutObjects = []
         this.exitTile = {x: 0, y: 0}
         this.mapHeight = 0
         this.numberOfRooms = 0
+
+        this.moveQueue = []
 
         window.addEventListener('keydown', (event) => { 
             this.gameStart = true
@@ -132,20 +139,44 @@ export class GameScene extends Scene {
         }
     }
 
+    getObjectAt(x, y, room) {
+        return this.mapLayoutObjects[room]?.find(object => 
+            object.mapX === x &&
+            object.mapY === y
+        )
+    }
+
     handleMove(direction) {
-        if (this.isMoving) return
+        if (this.isMoving) {
+            this.moveQueue.push(direction)
+            return
+        }
 
         if (direction === 'up') {
             this.player.move('up')
+            
             if (this.mapPlayerPosition.y == 0) {
+                const targetX = this.mapPlayerPosition.x - this.mapLayoutOffset[this.mapPlayerRoom + 1].x + this.mapLayoutOffset[this.mapPlayerRoom].x
+                const targetY = this.mapLayout[this.mapPlayerRoom + 1].length - 1
+                const object = this.getObjectAt(targetX, targetY, this.mapPlayerRoom + 1)
+                if (object) return
+
+                this.playerContainer.zIndex--
                 this.mapPlayerPosition.y = this.mapLayout[this.mapPlayerRoom + 1].length - 1
-                this.mapPlayerPosition.x = this.mapPlayerPosition.x - this.mapLayoutOffset[this.mapPlayerRoom + 1] + this.mapLayoutOffset[this.mapPlayerRoom] 
+                this.mapPlayerPosition.x = this.mapPlayerPosition.x - this.mapLayoutOffset[this.mapPlayerRoom + 1].x + this.mapLayoutOffset[this.mapPlayerRoom].x 
                 this.mapPlayerRoom++
+
                 if(this.mapPlayerRoom > this.mapPlayerMaxRoom) {
                     this.mapPlayerMaxRoom++
                     this.generateRoom()
                 }
             } else {
+                const targetX = this.mapPlayerPosition.x
+                const targetY = this.mapPlayerPosition.y - 1
+                const object = this.getObjectAt(targetX, targetY, this.mapPlayerRoom)
+                if (object) return
+
+                this.playerContainer.zIndex--
                 this.mapPlayerPosition.y--
             }
             this.move(0, -this.moveDistance)
@@ -156,12 +187,25 @@ export class GameScene extends Scene {
         }
 
         if (direction === 'down') {
+            
             this.player.move('down')
             if (this.mapPlayerPosition.y == this.mapLayout[this.mapPlayerRoom].length -1) {
+                const targetX = this.mapPlayerPosition.x + this.mapLayoutOffset[this.mapPlayerRoom].x - this.mapLayoutOffset[this.mapPlayerRoom -1].x
+                const targetY = 0
+                const object = this.getObjectAt(targetX, targetY, this.mapPlayerRoom - 1)
+                if (object) return
+
+                this.playerContainer.zIndex++
                 this.mapPlayerPosition.y = 0
-                this.mapPlayerPosition.x = this.mapPlayerPosition.x + this.mapLayoutOffset[this.mapPlayerRoom] - this.mapLayoutOffset[this.mapPlayerRoom -1] 
+                this.mapPlayerPosition.x = this.mapPlayerPosition.x + this.mapLayoutOffset[this.mapPlayerRoom].x - this.mapLayoutOffset[this.mapPlayerRoom -1].x 
                 this.mapPlayerRoom--
             } else {
+                const targetX = this.mapPlayerPosition.x
+                const targetY = this.mapPlayerPosition.y + 1
+                const object = this.getObjectAt(targetX, targetY, this.mapPlayerRoom)
+                if (object) return
+
+                this.playerContainer.zIndex++
                 this.mapPlayerPosition.y++
             }
             this.move(0, this.moveDistance)
@@ -170,12 +214,24 @@ export class GameScene extends Scene {
 
         if (direction === 'left') {
             this.player.move('left')
+
+            const targetX = this.mapPlayerPosition.x - 1
+            const targetY = this.mapPlayerPosition.y
+            const object = this.getObjectAt(targetX, targetY, this.mapPlayerRoom)
+            if (object) return
+
             this.mapPlayerPosition.x--
             this.move(-this.moveDistance, 0)
         }
 
         if (direction === 'right') {
             this.player.move('right')
+
+            const targetX = this.mapPlayerPosition.x + 1
+            const targetY = this.mapPlayerPosition.y
+            const object = this.getObjectAt(targetX, targetY, this.mapPlayerRoom)
+            if (object) return
+
             this.mapPlayerPosition.x++ 
             this.move(this.moveDistance, 0); 
         }
@@ -189,8 +245,53 @@ export class GameScene extends Scene {
         this.isMoving = true
     }
 
+    createStartMapObject(object, roomIndex, roomHeight, xOffSet = 0, yOffset = 0) {
+        let sprite
+        switch (object.name) {
+            case 'pilar':
+                sprite = new Pilar()
+                break
+            default:
+                return
+        }
+        sprite.x = (object.x + xOffSet) * 48 + 3
+        sprite.y = (object.y - yOffset) * 48 + 3
+        sprite.zIndex = -(roomHeight - object.y + yOffset)
+        this.objectContainer.addChild(sprite)
+
+        this.mapLayoutObjects[roomIndex].push({
+            type: object.name,
+            mapX: object.x,
+            mapY: object.y,
+            sprite: sprite
+        })
+    }
+
+    createMapObject(object, roomIndex, roomHeight, xOffSet = 0, yOffset = 0) {
+        let sprite
+        switch (object.name) {
+            case 'pilar':
+                sprite = new Pilar()
+                break
+            default:
+                return
+        }
+        sprite.x = (object.x + xOffSet) * 48 + 3
+        sprite.y = (object.y - yOffset -1) * 48 + 3
+        sprite.zIndex = -(roomHeight - object.y + yOffset)
+        this.objectContainer.addChild(sprite)
+
+        this.mapLayoutObjects[roomIndex].push({
+            type: object.name,
+            mapX: object.x,
+            mapY: object.y,
+            sprite: sprite
+        })
+    }
+
     initiateMap() {
         const startPlace = mapStart.schemas[Math.floor(Math.random() * mapStart.schemas.length)]
+        this.playerContainer.zIndex = -startPlace.startTileY
         this.mapLayout.push(startPlace.tiles)
         const mapContainer = new Container()
         this.camera.addChildAt(mapContainer, 0)
@@ -227,8 +328,14 @@ export class GameScene extends Scene {
                 }
             }
         }
+
+        this.mapLayoutObjects.push([])
+        startPlace.objects.forEach(object => {
+            this.createStartMapObject(object, 0, startPlace.height)
+        });
+
         this.map.push(mapContainer)
-        this.mapLayoutOffset.push(0)
+        this.mapLayoutOffset.push({x: 0, y: 0})
         this.mapPlayerPosition.x = startPlace.startTileX
         this.mapPlayerPosition.y = startPlace.startTileY
         
@@ -252,9 +359,10 @@ export class GameScene extends Scene {
         const mapContainer = new Container()
         this.camera.addChildAt(mapContainer, 0)
         this.mapLayout.push(room.tiles)
-        const xOffSet = this.mapLayoutOffset[this.numberOfRooms] - room.startTileX + this.exitTile.x
-        this.mapLayoutOffset.push(xOffSet)
-        //
+        const xOffSet = this.mapLayoutOffset[this.numberOfRooms].x - room.startTileX + this.exitTile.x
+        const yOffset = this.mapHeight
+        this.mapHeight += room.height
+        this.mapLayoutOffset.push({x: xOffSet, y: yOffset })
         for (let row = 0; row < room.height; row++) {
             for (let col = 0; col < room.width; col++) {
                 if (room.tiles[row][col] == 0) {
@@ -280,7 +388,7 @@ export class GameScene extends Scene {
                             
                     }
                     tile.x = 48 * (col + xOffSet)
-                    tile.y = 48 * (row - this.mapHeight - 1)
+                    tile.y = 48 * (row - yOffset - 1)
                     tile.width = 51;
                     tile.height = 102;
 
@@ -288,11 +396,15 @@ export class GameScene extends Scene {
                 }
             }
         }
-
-        this.mapHeight += room.height
+        
+        
         this.exitTile.x = room.exitTileX
         this.exitTile.y = room.exitTileY
         this.numberOfRooms++
+        this.mapLayoutObjects.push([])
+        room.objects.forEach(object => {
+            this.createMapObject(object, this.numberOfRooms, room.height,xOffSet, yOffset)
+        });
     }
 
     defeat() {
@@ -324,7 +436,7 @@ export class GameScene extends Scene {
         this.defeatOverlay.addChild(title);
 
         const score = new Text({
-        text: `Height: ${this.playerCurrentRecord}`,
+            text: `Height: ${this.playerCurrentRecord}`,
             style: {
                 fontSize: 20,
                 fill: 0xffffff
@@ -370,6 +482,11 @@ export class GameScene extends Scene {
 
                 this.isMoving = false
                 this.onPlayerEnterTile()
+
+                if (this.moveQueue.length > 0 && !this.isDefeated) {
+                    const nextMove = this.moveQueue.shift()
+                    this.handleMove(nextMove)
+                }
             } else {
                 this.playerContainer.x += (dx / distance) * step
                 this.playerContainer.y += (dy / distance) * step
