@@ -15,6 +15,5 @@ export class Pilar extends Container {
         this.addChild(this.sprite)
 
         this.pushable = false
-        console.log("EEEEEEEEEE")
     }
 }
