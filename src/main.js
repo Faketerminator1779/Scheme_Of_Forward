@@ -6,9 +6,9 @@ const game = new Game();
 TextureStyle.defaultOptions.scaleMode = 'nearest'
 
 await Assets.load([
-    './assets/map/tiles.json',
-    './assets/characters/knight.json',
-    './assets/objects/pilar.json'
+    '/assets/map/tiles.json',
+    '/assets/characters/knight.json',
+    '/assets/objects/pilar.json'
 ]);
 
 
