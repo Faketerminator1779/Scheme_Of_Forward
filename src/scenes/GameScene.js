@@ -285,8 +285,8 @@ export class GameScene extends Scene {
             default:
                 return
         }
-        sprite.x = (object.x + xOffSet) * 48 + 24
-        sprite.y = (object.y - yOffset -1) * 48 + 24
+        sprite.x = (object.x + xOffSet) * 48 + 26
+        sprite.y = (object.y - yOffset -1) * 48 + 26
         sprite.zIndex = -(roomHeight - object.y + yOffset)
         this.objectContainer.addChild(sprite)
 

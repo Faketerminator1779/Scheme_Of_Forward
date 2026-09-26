@@ -12,12 +12,12 @@ export class Bat extends Container {
         this.wiggleTime = 0
         this.direction = direction
 
-        /*
+        
         this.circle = new Graphics()
         this.circle.circle(0,0,15)
         this.circle.fill({color:0xff0000})
         this.addChildAt(this.circle, 0)
-        */
+        
 
         this.sprite = Sprite.from('bat')
 
