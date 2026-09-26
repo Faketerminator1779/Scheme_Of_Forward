@@ -1,4 +1,4 @@
-import { AnimatedSprite, Assets, Container } from 'pixi.js';
+import { AnimatedSprite, Assets, Container, Graphics } from 'pixi.js';
 
 export class Knight extends Container {
 
@@ -18,12 +18,20 @@ export class Knight extends Container {
         this.sprite.width = 45
         this.sprite.height = 90
 
-        this.sprite.anchor.set(0, 0.5)
+        this.sprite.anchor.set(0.5, 0.75)
 
         this.sprite.animationSpeed = 0.1
         this.sprite.loop = true
 
         this.addChild(this.sprite)
+
+        /*
+        this.circle = new Graphics()
+        this.circle.circle(0,0,25)
+        this.circle.fill({color:0xff0000})
+        this.addChildAt(this.circle, 0)
+        */
+
     }
 
     getFrames(name) {

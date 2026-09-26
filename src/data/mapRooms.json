@@ -42,6 +42,42 @@
             "startTileY": 4,
             "exitTileX":0,
             "exitTileY":0
+        },
+        {
+            "name": "room_snake_2",
+            "width": 3,
+            "height": 5,
+            "tiles": [
+                [10,0,0],
+                [10,10,10],
+                [10,10,10],
+                [10,10,10],
+                [10,0,0]
+            ],
+            "objects": [
+                {
+                    "name": "pilar",
+                    "x": 0,
+                    "y": 2
+                },
+                {
+                    "name": "pilar",
+                    "x": 1,
+                    "y": 2
+                },
+                {
+                    "name": "bat",
+                    "x": 1,
+                    "y": 2,
+                    "radius": 60,
+                    "speed": 0.04,
+                    "direction": "UN_CLOCK"
+                }
+            ],
+            "startTileX": 0,
+            "startTileY": 4,
+            "exitTileX":0,
+            "exitTileY":0
         }
     ] 
 }

@@ -8,6 +8,8 @@ import { Knight } from '../objects/Knight.js'
 
 import { Pilar } from '../objects/Pilar.js'
 
+import { Bat } from '../objects/Bat.js'
+
 
 export class GameScene extends Scene {
     constructor(sceneManager) {
@@ -23,6 +25,9 @@ export class GameScene extends Scene {
         this.objectContainer.sortableChildren = true
         this.camera.addChild(this.objectContainer)
 
+        this.mapContainer = new Container()
+        this.camera.addChildAt(this.mapContainer, 0)
+
         this.playerContainer = new Container()
         this.objectContainer.addChild(this.playerContainer)
 
@@ -33,6 +38,7 @@ export class GameScene extends Scene {
         this.playerContainer.addChild(this.player)
         this.playerCurrentheight = 0
         this.playerCurrentRecord = 0
+        this.highScore = Number(localStorage.getItem('highScore')) || 0
         
         this.mapPlayerPosition = { x: 0, y: 0}
         this.mapPlayerRoom = 0
@@ -254,8 +260,8 @@ export class GameScene extends Scene {
             default:
                 return
         }
-        sprite.x = (object.x + xOffSet) * 48 + 3
-        sprite.y = (object.y - yOffset) * 48 + 3
+        sprite.x = (object.x + xOffSet) * 48 + 24
+        sprite.y = (object.y - yOffset) * 48 + 24
         sprite.zIndex = -(roomHeight - object.y + yOffset)
         this.objectContainer.addChild(sprite)
 
@@ -273,11 +279,14 @@ export class GameScene extends Scene {
             case 'pilar':
                 sprite = new Pilar()
                 break
+            case 'bat':
+                sprite = new Bat(object.radius, object.speed, () => {this.defeat()}, object.direction)
+                break
             default:
                 return
         }
-        sprite.x = (object.x + xOffSet) * 48 + 3
-        sprite.y = (object.y - yOffset -1) * 48 + 3
+        sprite.x = (object.x + xOffSet) * 48 + 24
+        sprite.y = (object.y - yOffset -1) * 48 + 24
         sprite.zIndex = -(roomHeight - object.y + yOffset)
         this.objectContainer.addChild(sprite)
 
@@ -294,7 +303,7 @@ export class GameScene extends Scene {
         this.playerContainer.zIndex = -startPlace.startTileY
         this.mapLayout.push(startPlace.tiles)
         const mapContainer = new Container()
-        this.camera.addChildAt(mapContainer, 0)
+        this.mapContainer.addChildAt(mapContainer, 0)
         for (let row = 0; row < startPlace.height; row++) {
             for (let col = 0; col < startPlace.width; col++) {
                 if (startPlace.tiles[row][col] == 0) {
@@ -339,8 +348,8 @@ export class GameScene extends Scene {
         this.mapPlayerPosition.x = startPlace.startTileX
         this.mapPlayerPosition.y = startPlace.startTileY
         
-        this.playerContainer.x = startPlace.startTileX * 48 + 3
-        this.playerContainer.y = startPlace.startTileY * 48 + 3
+        this.playerContainer.x = startPlace.startTileX * 48 + 27
+        this.playerContainer.y = startPlace.startTileY * 48 + 27
         
         this.exitTile.x = startPlace.exitTileX
         this.exitTile.y = startPlace.exitTileY
@@ -357,7 +366,7 @@ export class GameScene extends Scene {
     generateRoom() {
         const room = mapRooms.schemas[Math.floor(Math.random() * mapRooms.schemas.length)]
         const mapContainer = new Container()
-        this.camera.addChildAt(mapContainer, 0)
+        this.mapContainer.addChildAt(mapContainer, 0)
         this.mapLayout.push(room.tiles)
         const xOffSet = this.mapLayoutOffset[this.numberOfRooms].x - room.startTileX + this.exitTile.x
         const yOffset = this.mapHeight
@@ -408,7 +417,22 @@ export class GameScene extends Scene {
     }
 
     defeat() {
+        if (this.isDefeated) return
+
         this.isDefeated = true;
+
+        this.container.addChild(this.defeatOverlay);
+
+        this.gameTouchArea.eventMode = 'none';
+
+        this.defeatOverlay.removeChildren();
+        this.defeatOverlay.visible = true;
+
+        if (this.playerCurrentRecord > this.highScore) {
+            this.highScore = this.playerCurrentRecord;
+            localStorage.setItem('highScore', this.highScore);
+        }
+
         this.defeatOverlay.removeChildren()
 
         const background = new Graphics()
@@ -421,6 +445,7 @@ export class GameScene extends Scene {
         this.defeatOverlay.visible = true
 
         this.isMoving = false
+
         const title = new Text({
             text: 'YOU DIED',
             style: {
@@ -448,6 +473,94 @@ export class GameScene extends Scene {
         score.y = 180;
 
         this.defeatOverlay.addChild(score);
+
+        const highScore = new Text({
+            text: `High Score: ${this.highScore}`,
+            style: {
+                fontSize: 20,
+                fill: 0xffffff
+            }
+        });
+
+        highScore.anchor.set(0.5);
+        highScore.x = 180;
+        highScore.y = 195;
+
+        this.defeatOverlay.addChild(highScore);
+        
+        const button = new Graphics()
+
+        button.roundRect(100, 250, 160, 55, 10)
+        button.fill(0xffffff)
+
+        button.eventMode = 'static';
+        button.cursor = 'pointer';
+
+        button.on('pointerdown', () => {
+            this.restart();
+        });
+
+        this.defeatOverlay.addChild(button);
+
+        const buttonText = new Text({
+            text: 'PLAY AGAIN',
+            style: {
+                fontSize: 18,
+                fill: 0x000000
+            }
+        });
+
+        buttonText.anchor.set(0.5);
+        buttonText.x = 180;
+        buttonText.y = 277;
+
+        this.defeatOverlay.addChild(buttonText);
+    }
+
+    restart() {
+        this.isDefeated = false;
+
+        this.defeatOverlay.visible = false;
+
+        this.mapContainer.removeChildren()
+
+        this.playerCurrentheight = 0;
+        this.playerCurrentRecord = 0;
+
+        this.mapPlayerPosition = { x: 0, y: 0 };
+        this.mapPlayerRoom = 0;
+        this.mapPlayerMaxRoom = 0;
+
+        this.map = [];
+        this.mapLayout = [];
+        this.mapLayoutOffset = [];
+        this.mapLayoutObjects = [];
+
+        this.exitTile = { x: 0, y: 0 };
+
+        this.mapHeight = 0;
+        this.numberOfRooms = 0;
+
+        this.moveQueue = [];
+
+        this.isMoving = false;
+        this.gameStart = false;
+
+        // Czyścimy mapę, gracza i obiekty
+        this.objectContainer.removeChildren();
+
+        // Dodajemy gracza ponownie
+        this.objectContainer.addChild(this.playerContainer);
+
+        this.playerContainer.x = 0;
+        this.playerContainer.y = 0;
+        this.playerContainer.zIndex = 0;
+
+        this.player.x = 0;
+        this.player.y = 0;
+
+        // Generujemy nową mapę
+        this.initiateMap();
     }
 
     onPlayerEnterTile() {
@@ -458,7 +571,19 @@ export class GameScene extends Scene {
     }
 
     update(delta) {
+        
+        for (const room of this.mapLayoutObjects) {
+            for (const object of room) {
+                if (object.sprite?.update) {
+                    object.sprite.update(delta, this.player, this.isDefeated)
+                }
+            }
+        }
+
+        
         if (this.isDefeated) return;
+
+
 
         if (this.isMoving) {
             const step = this.moveSpeed * delta
