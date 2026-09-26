@@ -23,7 +23,6 @@ export class Pilar extends Container {
         this.addChildAt(this.circle, 0)
         */
 
-
         this.pushable = false
     }
 }
